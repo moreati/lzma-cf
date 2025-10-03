@@ -177,6 +177,11 @@ def catch_lzma_error(fun, *args, ignore_buf_error=False):
     else:
         raise LZMAError("Unrecognised error from liblzma: %d" % lzret)
 
+def parse_check(check: int) -> int:
+    if check == -1:
+        check = m.LZMA_CHECK_CRC64
+    return check
+
 def parse_filter_spec_delta(id, dist=1):
     ret = ffi.new('lzma_options_delta*')
     ret.type = m.LZMA_DELTA_TYPE_BYTE
@@ -305,6 +310,11 @@ def _decode_stream_header_or_footer(decode_f, in_bytes):
     stream_flags = ffi.new('lzma_stream_flags*')
     catch_lzma_error(decode_f, stream_flags, footer_o)
     return StreamFlags(stream_flags)
+
+def parse_threads(threads: int) -> int:
+    if threads == 0:
+        threads = m.lzma_cputhreads()
+    return max(1, threads)
 
 decode_stream_footer = functools.partial(_decode_stream_header_or_footer,
     m.lzma_stream_footer_decode)
@@ -464,10 +474,17 @@ class LZMADecompressor(object):
     this should be a sequence of dicts, each indicating the ID and options
     for a single filter.
 
+    threads (if provided) should be None or an integer >= 0. A value of None
+    will perform single threaded compression. A value >= 0 will perform
+    multithreaded compression, 0 will automatically allocate as many threads
+    as the system can support. Note that a value of 1 will still run in
+    multithreaded mode.
+
     For one-shot decompression, use the decompress() function instead.
     """
     def __init__(self, format=FORMAT_AUTO, memlimit=None, filters=None,
-                 header=None, check=None, unpadded_size=None):
+                 header=None, check=None, unpadded_size=None, threads=None,
+                 ):
         decoder_flags = m.LZMA_TELL_ANY_CHECK | m.LZMA_TELL_NO_CHECK
         if memlimit is not None:
             if format == FORMAT_RAW:
@@ -487,6 +504,9 @@ class LZMADecompressor(object):
             raise ValueError("Cannot specify header, unpadded_size or check "
                              "except with FORMAT_BLOCK")
 
+        if format != FORMAT_XZ and threads is not None:
+            raise ValueError("Multithreaded mode is only supported by FORMAT_XZ")
+
         format = _parse_format(format)
         self.lock = threading.Lock()
         self.check = CHECK_UNKNOWN
@@ -498,6 +518,17 @@ class LZMADecompressor(object):
         self._input_buffer = ffi.NULL
         self._input_buffer_size = 0
 
+        # Multithreaded mode
+        if format == FORMAT_XZ and isinstance(threads, int):
+            mt = ffi.new('lzma_mt*')
+            mt.flags = decoder_flags
+            mt.threads = parse_threads(threads)
+            mt.memlimit_threading = memlimit
+            mt.memlimit_stop = memlimit
+            catch_lzma_error(m.lzma_stream_decoder_mt, mt)
+            return
+
+        # Singlethreaded mode
         if format == FORMAT_AUTO:
             catch_lzma_error(m.lzma_auto_decoder, self.lzs, memlimit, decoder_flags)
         elif format == FORMAT_XZ:
@@ -744,11 +775,22 @@ class LZMACompressor(object):
     have an entry for "id" indicating the ID of the filter, plus
     additional entries for options to the filter.
 
+    threads (if provided) should be None or an integer >= 0. A value of None
+    will perform single threaded compression. A value >= 0 will perform
+    multithreaded compression, 0 will automatically allocate as many threads
+    as the system can support. Note that a value of 1 will still run in
+    multithreaded mode.
+
     For one-shot compression, use the compress() function instead.
     """
-    def __init__(self, format=FORMAT_XZ, check=-1, preset=None, filters=None):
+    def __init__(
+            self, format=FORMAT_XZ, check=-1, preset=None, filters=None,
+            threads=None,
+    ):
         if format != FORMAT_XZ and check not in (-1, m.LZMA_CHECK_NONE):
             raise ValueError("Integrity checks are only supported by FORMAT_XZ")
+        if format != FORMAT_XZ and threads is not None:
+            raise ValueError("Multithreaded mode is only supported by FORMAT_XZ")
         if preset is not None and filters is not None:
             raise ValueError("Cannot specify both preset and filter chain")
         if preset is None:
@@ -758,10 +800,23 @@ class LZMACompressor(object):
         self.flushed = 0
         self.lzs = _new_lzma_stream()
         __pypy__.add_memory_pressure(COMPRESSION_STREAM_SIZE)
+
+        # Multithreaded mode
+        if format == FORMAT_XZ and isinstance(threads, int):
+            mt = ffi.new('lzma_mt*')
+            mt.threads = parse_threads(threads)
+            if filters is None:
+                mt.preset = preset
+            else:
+                mt.filters = parse_filter_chain_spec(filters)
+            mt.check = parse_check(check)
+            catch_lzma_error(m.lzma_stream_encoder_mt, self.lzs, mt)
+            return
+
+        # Singlethreaded mode
         if format == FORMAT_XZ:
             if filters is None:
-                if check == -1:
-                    check = m.LZMA_CHECK_CRC64
+                check = parse_check(check)
                 catch_lzma_error(m.lzma_easy_encoder, self.lzs,
                     preset, check)
             else:

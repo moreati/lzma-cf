@@ -77,6 +77,8 @@ ffi.cdef("""
 #define LZMA_PRESET_DEFAULT ...
 #define LZMA_PRESET_EXTREME ...
 
+typedef enum { ... } lzma_reserved_enum;
+
 typedef enum { LZMA_OK, LZMA_STREAM_END, LZMA_NO_CHECK,
     LZMA_UNSUPPORTED_CHECK, LZMA_GET_CHECK,
     LZMA_MEM_ERROR, LZMA_MEMLIMIT_ERROR,
@@ -138,6 +140,29 @@ typedef struct {
     ...;
 } lzma_filter;
 
+
+typedef struct {
+    uint32_t flags;
+    uint32_t threads;
+    uint64_t block_size;
+    uint32_t timeout;
+    uint32_t preset;
+    const lzma_filter *filters;
+    lzma_check check;
+
+	lzma_reserved_enum reserved_enum1;
+	lzma_reserved_enum reserved_enum2;
+	lzma_reserved_enum reserved_enum3;
+	uint32_t reserved_int1;
+	uint32_t reserved_int2;
+	uint32_t reserved_int3;
+	uint32_t reserved_int4;
+
+    uint64_t memlimit_threading;
+    uint64_t memlimit_stop;
+    ...;
+} lzma_mt;
+
 typedef struct {
     uint32_t version;
     lzma_vli backward_size;
@@ -158,9 +183,13 @@ typedef struct {
 
 bool lzma_check_is_supported(int check);
 
+// Hardware
+uint32_t lzma_cputhreads(void);  // TODO lzma_nothrow?
+
 // Encoder/Decoder
 int lzma_auto_decoder(lzma_stream *strm, uint64_t memlimit, uint32_t flags);
 int lzma_stream_decoder(lzma_stream *strm, uint64_t memlimit, uint32_t flags);
+int lzma_stream_decoder_mt(lzma_stream *strm, const lzma_mt *options);
 int lzma_alone_decoder(lzma_stream *strm, uint64_t memlimit);
 int lzma_raw_decoder(lzma_stream *strm, const lzma_filter *filters);
 int lzma_block_decoder(lzma_stream *strm, lzma_block *block);
@@ -168,7 +197,10 @@ int lzma_block_decoder(lzma_stream *strm, lzma_block *block);
 int lzma_easy_encoder(lzma_stream *strm, uint32_t preset, int check);
 int lzma_alone_encoder(lzma_stream *strm, lzma_options_lzma* options);
 int lzma_raw_encoder(lzma_stream *strm, const lzma_filter *filters);
+// TODO Why is check declared as int?
+// TDOD Why is the return type int?
 int lzma_stream_encoder(lzma_stream *strm, const lzma_filter *filters, int check);
+int lzma_stream_encoder_mt(lzma_stream *strm, const lzma_mt *options);
 
 int lzma_get_check(const lzma_stream *strm);
 
