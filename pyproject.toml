@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+[project]
+name = "lzma-cf"
+version = "0.0"
+description = "LZMA and XZ compression for control freaks"
+authors = [
+    {name = "Alex Willmer", email = "alex@moreati.org.uk"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "compression",
+    "lzma",
+    "xz",
+    "xz-utils",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Archiving :: Compression",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/moreati/lzma-cf"
