@@ -5,8 +5,8 @@ version  = 1
 
 [[annotations]]
 path = [
-    "_lzma_build.py",
-    "_lzma.py",
+    "src/lzma_cf/_lzma_build.py",
+    "src/lzma_cf/_lzma.py",
 ]
 SPDX-FileCopyrightText = [
     "Copyright (c) 2010-2011, Per Øyvind Karlsen.",
@@ -19,7 +19,7 @@ SPDX-License-Identifier = "BSD-3-Clause AND MIT AND PSF-2.0"
 
 [[annotations]]
 path = [
-    "lzma.py",
+    "src/lzma_cf/__init__.py",
 ]
 SPDX-FileCopyrightText = [
     # From CPython 3.10.9 via PyPy

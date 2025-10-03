@@ -5,6 +5,6 @@ import setuptools
 
 setuptools.setup(
     cffi_modules=[
-        "_lzma_build.py:ffi",
+        "src/lzma_cf/_lzma_build.py:ffi",
     ],
 )

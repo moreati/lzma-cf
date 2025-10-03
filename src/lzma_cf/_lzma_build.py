@@ -269,7 +269,7 @@ void free(void *ptr);
 void *realloc(void *ptr, size_t size);
 """)
 
-ffi.set_source('_lzma_cffi', """
+ffi.set_source('lzma_cf._lzma_cffi', """
 #ifdef _MSC_VER
 #define LZMA_API_STATIC
 #endif

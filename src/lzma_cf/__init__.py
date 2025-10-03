@@ -24,10 +24,10 @@ __all__ = [
 import builtins
 import io
 import os
-from _lzma import *
-from _lzma import _encode_filter_properties, _decode_filter_properties
 import _compression
 
+from ._lzma import *
+from ._lzma import _encode_filter_properties, _decode_filter_properties
 
 _MODE_CLOSED   = 0
 _MODE_READ     = 1

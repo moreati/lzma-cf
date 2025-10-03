@@ -44,9 +44,13 @@ import collections.abc
 import weakref
 import sys
 import io
-import __pypy__
 
-from _lzma_cffi import ffi, lib as m
+try:
+    import __pypy__
+except ImportError:
+    from . import __pypy__
+
+from ._lzma_cffi import ffi, lib as m
 
 SUPPORTED_STREAM_FLAGS_VERSION = 0
 

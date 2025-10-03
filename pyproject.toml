@@ -47,10 +47,3 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/moreati/lzma-cf"
-
-[tool.setuptools]
-py-modules = [
-    "_lzma_build",
-    "_lzma",
-    "lzma",
-]
