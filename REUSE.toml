@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+version  = 1
+
+[[annotations]]
+path = [
+    "_lzma_build.py",
+    "_lzma.py",
+]
+SPDX-FileCopyrightText = [
+    "Copyright (c) 2010-2011, Per Øyvind Karlsen.",
+    "Copyright (c) 2011-2012, Nadeem Vawda.",
+    "Copyright (c) 2012-2013, Peter J. A. Cock.",
+    "Copyright (c) 2013-2014, Tomer Chachamu.",
+    "Copyright (c) 2015, PyPy Copyright holders",
+]
+SPDX-License-Identifier = "BSD-3-Clause AND MIT AND PSF-2.0"
+
+[[annotations]]
+path = [
+    "lzma.py",
+]
+SPDX-FileCopyrightText = [
+    # From CPython 3.10.9 via PyPy
+    "Copyright (c) 2011-2021, Python Software Foundation",
+]
+SPDX-License-Identifier = "PSF-2.0"

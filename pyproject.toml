@@ -1,14 +1,30 @@
 # SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
 # SPDX-License-Identifier: MIT
 
+[build-system]
+requires = [
+    "cffi>=1.15; python_version == '3.10' or python_version == '3.11'",
+    "cffi>=1.16; python_version == '3.12' or python_version == '3.13'",
+    "cffi>=2.0; python_version >= '3.14'",
+    "setuptools>=77.0.3",  # Supports SPDX expression in license field
+]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "lzma-cf"
 version = "0.0"
 description = "LZMA and XZ compression for control freaks"
+license = "BSD-3-Clause AND MIT AND PSF-2.0"
+license-files = ["LICENSES/*.txt"]
 authors = [
     {name = "Alex Willmer", email = "alex@moreati.org.uk"},
 ]
 readme = "README.md"
+dependencies = [
+    "cffi>=1.15; python_version == '3.10' or python_version == '3.11'",
+    "cffi>=1.16; python_version == '3.12' or python_version == '3.13'",
+    "cffi>=2.0; python_version >= '3.14'",
+]
 requires-python = ">=3.10"
 keywords = [
     "compression",
@@ -31,3 +47,10 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/moreati/lzma-cf"
+
+[tool.setuptools]
+py-modules = [
+    "_lzma_build",
+    "_lzma",
+    "lzma",
+]
