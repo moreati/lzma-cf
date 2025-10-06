@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+name: Build packages
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install build
+      - run: python -m build --sdist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*
+          if-no-files-found: error
+
+  wheels:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+        # https://github.com/actions/runner-images/tree/main/images
+        os:
+          - macos-latest
+          - ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pypa/cibuildwheel@v3.2.0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*
+          if-no-files-found: error

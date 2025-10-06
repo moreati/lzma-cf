@@ -1,12 +1,4 @@
 # SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
 # SPDX-License-Identifier: MIT
 
-*.egg-info
-*.pyc
-*.pyd
-*.pyo
-*.so
-/build
-/dist
-/wheelhouse
-/xz
+include pkg/*
