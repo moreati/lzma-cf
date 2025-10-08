@@ -47,3 +47,39 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/moreati/lzma-cf"
+
+[tool.cibuildwheel]
+skip = [
+    "*-musllinux*",
+    "cp3??t-*",
+]
+
+[tool.cibuildwheel.environment]
+# Entries are evaluated in order of appearence
+# https://github.com/pypa/cibuildwheel/issues/2616
+XZ_UTILS_DIR = "xz"
+XZ_UTILS_PREFIX = "$HOME/.local"
+XZ_UTILS_REV = "v5.8.1"
+XZ_UTILS_URL = "https://github.com/tukaani-project/xz.git"
+C_INCLUDE_PATH = "$XZ_UTILS_PREFIX/include:$C_INCLUDE_PATH"
+LD_LIBRARY_PATH = "$XZ_UTILS_PREFIX/lib:$LD_LIBRARY_PATH"
+LIBRARY_PATH = "$XZ_UTILS_PREFIX/lib:$LIBRARY_PATH"
+
+[tool.cibuildwheel.linux]
+before-all = [
+    "yum install -y gettext-devel po4a",
+    "./pkg/clone_xz_utils",
+    "./pkg/build_xz_utils",
+]
+environment-pass = [
+    "C_INCLUDE_PATH",
+    "LD_LIBRARY_PATH",
+    "LIBRARY_PATH",
+]
+
+[tool.cibuildwheel.macos]
+before-all = [
+    "brew install autoconf automake libtool po4a",
+    "./pkg/clone_xz_utils",
+    "./pkg/build_xz_utils",
+]

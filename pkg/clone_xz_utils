@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+git \
+    -c "advice.detachedHead=false" \
+    clone \
+    --depth 1 \
+    --branch "$XZ_UTILS_REV" \
+    "$XZ_UTILS_URL" \
+    "$XZ_UTILS_DIR"

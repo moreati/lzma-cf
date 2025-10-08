@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+pushd "$XZ_UTILS_DIR"
+./autogen.sh
+# Defaults to both shared and static build
+./configure \
+    --prefix="$XZ_UTILS_PREFIX" \
+    --disable-{doc,lzmadec,lzmainfo,lzma-links,xz,xzdec}
+make
+make install
+popd
