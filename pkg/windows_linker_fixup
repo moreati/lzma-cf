@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+# import os
+# import pathlib
+# import shutil
+# import subprocess
+
+#libdir = pathlib.Path(os.environ['LZMA_CF_LIBRARY_DIRS']).resolve(strict=True)
+
+
+#subprocess.run(
+#    [shutil.which('lib.exe'), '/DEF:liblzma.def', '/OUT:.libs\\libmza.lib', '/MACHINE:x64'],
+#    cwd=libdir,
+#    check=True,
+#)
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+pushd "$XZ_UTILS_DIR"
+dlltool \
+    --verbose \
+    --input-def src/liblzma/liblzma.def \
+    --output-lib src/liblzma/.libs/lzma.lib
+popd
