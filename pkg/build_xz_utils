@@ -11,7 +11,7 @@ pushd "$XZ_UTILS_DIR"
 # Defaults to both shared and static build
 ./configure \
     --prefix="$XZ_UTILS_PREFIX" \
-    --disable-{doc,lzmadec,lzmainfo,lzma-links,xz,xzdec}
+    --disable-{doc,lzmadec,lzmainfo,lzma-links,scripts,xz,xzdec}
 make
 make install
 popd
