@@ -32,7 +32,9 @@ jobs:
         # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
         # https://github.com/actions/runner-images/tree/main/images
         os:
+          - macos-15-intel
           - macos-latest
+          - ubuntu-24.04-arm
           - ubuntu-latest
     steps:
       - uses: actions/checkout@v5
