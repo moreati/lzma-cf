@@ -71,11 +71,6 @@ before-all = [
     "./pkg/clone_xz_utils",
     "./pkg/build_xz_utils",
 ]
-environment-pass = [
-    "C_INCLUDE_PATH",
-    "LD_LIBRARY_PATH",
-    "LIBRARY_PATH",
-]
 
 [tool.cibuildwheel.macos]
 before-all = [
