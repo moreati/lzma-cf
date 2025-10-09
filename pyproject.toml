@@ -49,6 +49,9 @@ classifiers = [
 "Homepage" = "https://github.com/moreati/lzma-cf"
 
 [tool.cibuildwheel]
+enable = [
+    "pypy",
+]
 skip = [
     "*-musllinux*",
     "cp3??t-*",
