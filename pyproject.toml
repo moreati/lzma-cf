@@ -49,6 +49,7 @@ classifiers = [
 "Homepage" = "https://github.com/moreati/lzma-cf"
 
 [tool.cibuildwheel]
+build = "cp314-*"
 enable = [
     "pypy",
 ]
@@ -80,4 +81,10 @@ before-all = [
     "brew install autoconf automake libtool po4a",
     "./pkg/clone_xz_utils",
     "./pkg/build_xz_utils",
+]
+
+[tool.cibuildwheel.windows]
+before-all = [
+    "msys2 ./pkg/clone_xz_utils",
+    "msys2 ./pkg/build_xz_utils",
 ]

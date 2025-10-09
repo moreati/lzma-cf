@@ -32,11 +32,19 @@ jobs:
         # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
         # https://github.com/actions/runner-images/tree/main/images
         os:
-          - macos-15-intel
-          - macos-latest
-          - ubuntu-24.04-arm
-          - ubuntu-latest
+          #- macos-15-intel
+          #- macos-latest
+          #- ubuntu-24.04-arm
+          #- ubuntu-latest
+          #- windows-11-arm
+          - windows-latest
     steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: >
+            autoconf automake gettext-devel gcc git libtool make po4a xz
+        if: ${{ runner.os == 'Windows' }}
       - uses: actions/checkout@v5
       - uses: pypa/cibuildwheel@v3.2.0
       - uses: actions/upload-artifact@v4
