@@ -21,18 +21,20 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: sdist
-          path: dist/*
+          path: dist/*.tar.gz
           if-no-files-found: error
 
   wheels:
-    name: ${{ matrix.os }}
+    name: wheels-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
         # https://github.com/actions/runner-images/tree/main/images
         os:
+          - macos-15-intel
           - macos-latest
+          - ubuntu-24.04-arm
           - ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -40,5 +42,16 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
-          path: wheelhouse/*
+          path: wheelhouse/*.whl
           if-no-files-found: error
+
+  merge:
+    needs:
+      - sdist
+      - wheels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: dist
+          delete-merged: true

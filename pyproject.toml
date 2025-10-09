@@ -49,6 +49,9 @@ classifiers = [
 "Homepage" = "https://github.com/moreati/lzma-cf"
 
 [tool.cibuildwheel]
+enable = [
+    "pypy",
+]
 skip = [
     "*-musllinux*",
     "cp3??t-*",
@@ -70,11 +73,6 @@ before-all = [
     "yum install -y gettext-devel po4a",
     "./pkg/clone_xz_utils",
     "./pkg/build_xz_utils",
-]
-environment-pass = [
-    "C_INCLUDE_PATH",
-    "LD_LIBRARY_PATH",
-    "LIBRARY_PATH",
 ]
 
 [tool.cibuildwheel.macos]
