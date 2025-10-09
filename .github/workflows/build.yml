@@ -42,3 +42,14 @@ jobs:
           name: wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
           if-no-files-found: error
+
+  merge:
+    needs:
+      - sdist
+      - wheels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: dist
+          delete-merged: true
