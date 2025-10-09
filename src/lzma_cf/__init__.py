@@ -24,7 +24,10 @@ __all__ = [
 import builtins
 import io
 import os
-import _compression
+try:
+    from compression._common import _streams
+except ImportError:
+    import _compression as _streams
 
 from ._lzma import *
 from ._lzma import _encode_filter_properties, _decode_filter_properties
@@ -35,7 +38,7 @@ _MODE_READ     = 1
 _MODE_WRITE    = 3
 
 
-class LZMAFile(_compression.BaseStream):
+class LZMAFile(_streams.BaseStream):
 
     """A file object providing transparent LZMA (de)compression.
 
@@ -139,7 +142,7 @@ class LZMAFile(_compression.BaseStream):
             raise TypeError("filename must be a str, bytes, file or PathLike object")
 
         if self._mode == _MODE_READ:
-            raw = _compression.DecompressReader(self._fp, LZMADecompressor,
+            raw = _streams.DecompressReader(self._fp, LZMADecompressor,
                 trailing_error=LZMAError, format=format, filters=filters,
                 threads=threads,
             )
