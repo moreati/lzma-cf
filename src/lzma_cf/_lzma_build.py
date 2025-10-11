@@ -39,7 +39,20 @@
 # the LICENSE file in the top-level directory
 
 
+import os
+
 from cffi import FFI
+
+
+def _envdirs(var_name: str) -> list[str] | None:
+    try:
+        var = os.environ[var_name]
+    except KeyError:
+        print(f'{var_name} -> None')
+        return None
+    dirs = [os.path.normpath(p) for p in var.split(os.pathsep)]
+    print(f'{var_name} -> {dirs!r}')
+    return dirs
 
 
 ffi = FFI()
@@ -316,6 +329,8 @@ uint32_t _pylzma_block_header_size_decode(uint32_t b) {
     return lzma_block_header_size_decode(b); // macro from lzma.h
 }
 """,
+    include_dirs=_envdirs('LZMA_CF_INCLUDE_DIRS'),
+    library_dirs=_envdirs('LZMA_CF_LIBRARY_DIRS'),
     libraries=['lzma'])
 
 
