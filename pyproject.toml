@@ -56,6 +56,9 @@ skip = [
     "*-musllinux*",
     "cp3??t-*",
 ]
+test-command = [
+    'python -c "import lzma_cf; lzma_cf.compress(bytes(100), threads=2)"',
+]
 
 [tool.cibuildwheel.environment]
 # Entries are evaluated in order of appearence
