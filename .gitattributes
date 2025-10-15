@@ -1,0 +1,4 @@
+# SPDX-FileCopyrightText: 2025 Alex Willmer <alex@moreati.org.uk>
+# SPDX-License-Identifier: MIT
+
+*.bat test eol=crlf

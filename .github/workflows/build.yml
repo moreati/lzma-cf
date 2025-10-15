@@ -36,9 +36,27 @@ jobs:
           - macos-latest
           - ubuntu-24.04-arm
           - ubuntu-latest
+        include:
+          - os: windows-latest
+            LZMA_CF_INCLUDE_DIRS: 'xz\src\liblzma\api'
+            LZMA_CF_LIBRARY_DIRS: 'xz\windows\build'
     steps:
+      - uses: msys2/setup-msys2@v2
+        env:
+          arch_lookup_json: '{"X64": "ucrt-x86_64", "ARM64": "clang-aarch64"}'
+        with:
+          msystem: UCRT64
+          install: >
+            mingw-w64-${{ fromJSON(env.arch_lookup_json)[runner.arch] }}-cmake
+            mingw-w64-${{ fromJSON(env.arch_lookup_json)[runner.arch] }}-gcc
+            mingw-w64-${{ fromJSON(env.arch_lookup_json)[runner.arch] }}-gettext-tools
+            git libtool make po4a
+        if: ${{ runner.os == 'Windows' }}
       - uses: actions/checkout@v5
       - uses: pypa/cibuildwheel@v3.2.0
+        env:
+          LZMA_CF_INCLUDE_DIRS: ${{ matrix.LZMA_CF_INCLUDE_DIRS || null }}
+          LZMA_CF_LIBRARY_DIRS: ${{ matrix.LZMA_CF_LIBRARY_DIRS || null }}
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
