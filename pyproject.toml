@@ -54,7 +54,11 @@ enable = [
 ]
 skip = [
     "*-musllinux*",
+    "*-win32",
     "cp3??t-*",
+]
+test-command = [
+    'python -c "import lzma_cf; lzma_cf.compress(bytes(100), threads=2)"',
 ]
 
 [tool.cibuildwheel.environment]
@@ -80,4 +84,18 @@ before-all = [
     "brew install autoconf automake libtool po4a",
     "./pkg/clone_xz_utils",
     "./pkg/build_xz_utils",
+]
+
+[tool.cibuildwheel.windows]
+before-all = [
+    "msys2 ./pkg/clone_xz_utils",
+    'cmd /c pkg\windows_build_xz_utils.bat',
+    'cmd /c pkg\windows_linker_fixup.bat',
+]
+before-build = [
+    "pip install delvewheel",
+]
+repair-wheel-command = [
+    #'delvewheel repair -vv --add-path $env:LZMA_CF_LIBRARY_DIRS -w {dest_dir} {wheel}',
+    'delvewheel repair -vv --add-path D:\a\lzma-cf\lzma-cf\xz\windows\build -w {dest_dir} {wheel}',
 ]
